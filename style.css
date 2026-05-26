@@ -114,7 +114,26 @@ body.side-panel-mode {
   letter-spacing: 0.09em;
   color: var(--muted);
   margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
+
+.project-badge {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--accent-h);
+  background: #1f3a5f;
+  border: 1px solid var(--accent);
+  padding: 1px 7px;
+  border-radius: 10px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.project-badge:not(:empty) { opacity: 1; }
 
 /* ---- Input Row ---- */
 .input-row {

@@ -222,6 +222,8 @@ function handleClear() {
   document.getElementById('sqlOutput').style.display   = 'none';
   document.getElementById('sqlHint').style.display     = '';
   document.getElementById('btnProcess').disabled       = true;
+  document.getElementById('checklistBadge').textContent = '';
+  initChecklist();
   document.getElementById('projectName').focus();
 }
 
@@ -252,6 +254,10 @@ function handleGenerate() {
   if (jrxmlContent) {
     document.getElementById('btnProcess').disabled = false;
   }
+
+  // Refresh checklist details so {p} shows actual project name
+  initChecklist();
+  document.getElementById('checklistBadge').textContent = raw;
 }
 
 function buildNames(p) {
