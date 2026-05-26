@@ -10,16 +10,126 @@ const WORKSPACE_URLS = [
   'about:blank',  // TODO: URL สำหรับ Employee Template
 ];
 
+// detail format:
+//   'text'           → bullet point
+//   '§ text'         → section sub-header
+//   '> text'         → code-only block  (monospace, highlighted)
+//   ['label','code'] → label: <code>
 const CHECKLIST_STEPS = [
-  'STEP 1  Column',
-  'STEP 2  Record Type',
-  'STEP 3  Field',
-  'STEP 4  Query',
-  'STEP 5  Employee Template',
-  'STEP 6  Capture',
-  'STEP 7  Order',
-  'STEP 8  Master Data',
-  'STEP 9  Jasper',
+  {
+    label: 'STEP 1  Column',
+    details: [
+      'เมนู: ตั้งค่าคอลัมน์รายงาน',
+      'ค้นหา sal_ot → กด Duplicate',
+      ['เปลี่ยนชื่อ', 'SAL_OT_{p}'],
+      'กด กลุ่มรายการ (Manage List)',
+      'ค้นหา SAL_OT → ดูข้อมูล → Duplicate',
+      ['ใส่รหัส', 'SAL_OT_{p}'],
+      'กด บันทึก → Publish',
+    ],
+  },
+  {
+    label: 'STEP 2  Record Type',
+    details: [
+      'เมนู: Record Type → กด เพิ่ม',
+      ['ชื่อ/รหัส', '_jobtype{p}'],
+      ['Label', 'job type {p}'],
+      'Publish',
+    ],
+  },
+  {
+    label: 'STEP 3  Field',
+    details: [
+      'เมนู: Record Type',
+      'ค้นหา AM_JobRoleForm → Duplicate',
+      ['ชื่อฟอร์ม', '_jobrole{p}'],
+      ['Label', 'job role {p}'],
+      '§ ตั้งค่าฟิลด์',
+      'หา jobLevel → กด Duplicate',
+      ['ชื่อฟิลด์', 'jobtype{p}'],
+      ['Label', 'job type {p}'],
+      'Data Type → Record',
+      'Form Display Row → Left',
+      ['RelateRecordTypeName', 'SAX03_jobtype{p}'],
+      ['Column Name', 'jobtype{p}'],
+      'กด ตกลง',
+    ],
+  },
+  {
+    label: 'STEP 4  Query',
+    details: [
+      'Select เพิ่ม:',
+      '> ,a.jobtype{p}',
+      'Publish',
+    ],
+  },
+  {
+    label: 'STEP 5  Employee Template',
+    details: [
+      'เมนู: Employee Template',
+      'กดรูประแจ → คัดลอกรายงาน',
+      ['Report Title', 'Employee Template {p}'],
+      'กดรูประแจ → Advance Configuration → Custom Form',
+      'เพิ่ม join statement:',
+      '> inner join SAX03_jobtype{p} jt',
+      '> on job.jobtype{p} = jt.id',
+      'Publish',
+    ],
+  },
+  {
+    label: 'STEP 6  Capture',
+    details: [
+      'กด + → Standard → Record Type',
+      'เลือก jobtype{p} → ติ๊ก name → Add',
+      '§ Captured — current period',
+      'กด + → Captured',
+      ['Capture Column', 'SAL_OT_{p}'],
+      'period → month, period value → current period → Save',
+      '§ Captured — 1 period before',
+      'กด + → Captured',
+      ['Capture Column', 'SAL_OT_{p}'],
+      'period → month, period value → 1 period before → Save',
+    ],
+  },
+  {
+    label: 'STEP 7  Order',
+    details: [
+      ['Override Order', 'b1Name,name'],
+      'Order Template → ลบให้ว่าง',
+      'Publish',
+    ],
+  },
+  {
+    label: 'STEP 8  Master Data',
+    details: [
+      ['เมนู', 'job type {p}'],
+      'กด เพิ่ม',
+      '§ เพิ่มข้อมูล',
+      'id = FCT, name = Factory → บันทึกและเพิ่ม',
+      'id = STT, name = Station → บันทึก',
+      '§ ตรวจสอบ Job Role',
+      'ค้นหา hr manager → แก้ไข',
+      'ตรวจสอบว่า jobtype{p} ขึ้นในฟอร์ม',
+    ],
+  },
+  {
+    label: 'STEP 9  Jasper',
+    details: [
+      '§ ทดสอบ Employee Template',
+      'วันที่: 010426 – 300426',
+      'หน่วยงาน: EU Capital Holding Company Limited',
+      'กด ดำเนินการ',
+      '§ ดาวน์โหลด Jasper File',
+      'แก้ไขรายงาน → Jasper file upload → Download',
+      '§ JasperSoft Studio',
+      'ลบ Column ที่ไม่ใช้',
+      'เพิ่ม Text Field + Number Field → Preview',
+      'Create Group → Group By Job Type',
+      'Add Header + Footer → ลาก Summary ลง Footer',
+      '§ อัปโหลด',
+      'Upload .jrxml → Publish → Export PDF',
+    ],
+  },
 ];
 
 const LS_KEY = 'hr_report_checklist_v1';
@@ -194,29 +304,102 @@ function initChecklist() {
   const container = document.getElementById('checklist');
   container.innerHTML = '';
 
-  CHECKLIST_STEPS.forEach((label, i) => {
+  CHECKLIST_STEPS.forEach((step, i) => {
     const isDone = !!saved[i];
 
-    const item = document.createElement('label');
-    item.className = `checklist-item${isDone ? ' done' : ''}`;
+    const wrapper = document.createElement('div');
+    wrapper.className = `checklist-item${isDone ? ' done' : ''}`;
+
+    // Header row
+    const header = document.createElement('div');
+    header.className = 'checklist-header';
 
     const cb = document.createElement('input');
     cb.type = 'checkbox';
-    cb.dataset.index = i;
     cb.checked = isDone;
 
-    const span = document.createElement('span');
-    span.textContent = label;
+    const labelSpan = document.createElement('span');
+    labelSpan.className = 'checklist-label';
+    labelSpan.textContent = step.label;
 
+    const toggleBtn = document.createElement('button');
+    toggleBtn.className = 'checklist-toggle';
+    toggleBtn.textContent = '›'; // ›
+    toggleBtn.setAttribute('aria-expanded', 'false');
+
+    header.appendChild(cb);
+    header.appendChild(labelSpan);
+    header.appendChild(toggleBtn);
+
+    // Details panel
+    const detailPanel = document.createElement('div');
+    detailPanel.className = 'checklist-details';
+
+    const ul = document.createElement('ul');
+    step.details.forEach(raw => ul.appendChild(renderDetailItem(raw)));
+    detailPanel.appendChild(ul);
+
+    // Events
     cb.addEventListener('change', () => {
       saveChecklistItem(i, cb.checked);
-      item.classList.toggle('done', cb.checked);
+      wrapper.classList.toggle('done', cb.checked);
     });
 
-    item.appendChild(cb);
-    item.appendChild(span);
-    container.appendChild(item);
+    header.addEventListener('click', e => {
+      if (e.target === cb) return;
+      const isOpen = detailPanel.classList.contains('open');
+      detailPanel.classList.toggle('open', !isOpen);
+      toggleBtn.classList.toggle('open', !isOpen);
+      toggleBtn.setAttribute('aria-expanded', String(!isOpen));
+    });
+
+    wrapper.appendChild(header);
+    wrapper.appendChild(detailPanel);
+    container.appendChild(wrapper);
   });
+}
+
+// Render one detail line based on its format
+function renderDetailItem(raw) {
+  const li = document.createElement('li');
+
+  if (Array.isArray(raw)) {
+    // ['label', 'code'] → "label: <code>value</code>"
+    const [lbl, code] = raw;
+    li.className = 'detail-pair';
+    const lblEl = document.createElement('span');
+    lblEl.className = 'd-label';
+    lblEl.textContent = lbl + ': ';
+    const codeEl = document.createElement('code');
+    codeEl.className = 'd-code';
+    codeEl.textContent = subProject(code);
+    li.appendChild(lblEl);
+    li.appendChild(codeEl);
+    return li;
+  }
+
+  if (raw.startsWith('§ ') || raw.startsWith('§ ')) {
+    // Section sub-header
+    li.className = 'detail-section';
+    li.textContent = raw.slice(2).trim();
+    return li;
+  }
+
+  if (raw.startsWith('> ')) {
+    // Code-only block
+    li.className = 'detail-code-block';
+    li.textContent = subProject(raw.slice(2));
+    return li;
+  }
+
+  // Normal bullet
+  li.textContent = subProject(raw);
+  return li;
+}
+
+// Replace {p} with current project name (or '{project}' if not set)
+function subProject(text) {
+  return text.replace(/\{p\}/g, currentProject || '{project}');
 }
 
 function loadChecklist() {
