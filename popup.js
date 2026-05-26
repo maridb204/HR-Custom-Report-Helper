@@ -24,6 +24,9 @@ const CHECKLIST_STEPS = [
 
 const LS_KEY = 'hr_report_checklist_v1';
 
+// true เมื่อเปิดในโหมด Side Panel (URL มี ?mode=panel)
+const IS_PANEL = new URLSearchParams(window.location.search).get('mode') === 'panel';
+
 // ── STATE ─────────────────────────────────────────
 let currentProject = '';   // ชื่อ project ที่ generate ล่าสุด
 let jrxmlContent  = '';    // เนื้อหาไฟล์ .jrxml ที่อ่านแล้ว
@@ -33,6 +36,7 @@ let jrxmlFileName = '';    // ชื่อไฟล์ .jrxml ที่อัป
 document.addEventListener('DOMContentLoaded', () => {
   initChecklist();
   bindEvents();
+  initPanelMode();
 });
 
 // ── BIND EVENTS ──────────────────────────────────
@@ -60,6 +64,32 @@ function bindEvents() {
 
   // Jasper process
   document.getElementById('btnProcess').addEventListener('click', processJrxml);
+
+  // Pin button
+  document.getElementById('btnPin').addEventListener('click', pinToSidePanel);
+}
+
+// ── PANEL MODE ───────────────────────────────────
+function initPanelMode() {
+  const btn = document.getElementById('btnPin');
+  if (IS_PANEL) {
+    // กำลังรันใน Side Panel — เปลี่ยนปุ่มเป็น "Pinned"
+    document.body.classList.add('side-panel-mode');
+    btn.textContent = 'Pinned';
+    btn.classList.add('pinned');
+    btn.title = 'กำลังแสดงในโหมด Side Panel';
+  }
+}
+
+async function pinToSidePanel() {
+  if (IS_PANEL) return; // ถ้าอยู่ใน panel อยู่แล้ว ไม่ต้องทำอะไร
+  try {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    await chrome.sidePanel.open({ windowId: tab.windowId });
+    window.close(); // ปิด popup หลังจากเปิด side panel
+  } catch {
+    showToast('Side Panel ต้องการ Chrome 114+');
+  }
 }
 
 // ── GENERATOR ────────────────────────────────────
