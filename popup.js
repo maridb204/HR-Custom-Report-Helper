@@ -147,6 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initChecklist();
   bindEvents();
   initPanelMode();
+  initSectionCollapse();
 });
 
 // ── BIND EVENTS ──────────────────────────────────
@@ -180,6 +181,43 @@ function bindEvents() {
 
   // Pin button
   document.getElementById('btnPin').addEventListener('click', pinToSidePanel);
+}
+
+// ── SECTION COLLAPSE ─────────────────────────────
+const SEC_KEY = 'hr_section_state_v1';
+
+function initSectionCollapse() {
+  const saved = JSON.parse(localStorage.getItem(SEC_KEY) || '{}');
+
+  document.querySelectorAll('.section').forEach(sec => {
+    const id     = sec.id;
+    const toggle = sec.querySelector('.section-toggle');
+    const body   = sec.querySelector('.section-body');
+    if (!toggle || !body) return;
+
+    // Restore saved state (default: open)
+    const isCollapsed = saved[id] === true;
+    if (isCollapsed) {
+      body.classList.add('collapsed');
+      toggle.classList.add('collapsed');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+
+    // Click on title row (but not interactive children) to toggle
+    sec.querySelector('.section-title').addEventListener('click', e => {
+      // Ignore clicks on badge or other buttons inside title
+      if (e.target.closest('.project-badge') || e.target.closest('.btn-pin')) return;
+
+      const nowCollapsed = body.classList.toggle('collapsed');
+      toggle.classList.toggle('collapsed', nowCollapsed);
+      toggle.setAttribute('aria-expanded', String(!nowCollapsed));
+
+      // Persist state
+      const state = JSON.parse(localStorage.getItem(SEC_KEY) || '{}');
+      state[id] = nowCollapsed;
+      localStorage.setItem(SEC_KEY, JSON.stringify(state));
+    });
+  });
 }
 
 // ── PANEL MODE ───────────────────────────────────

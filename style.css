@@ -104,19 +104,58 @@ body.side-panel-mode {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 12px;
+  overflow: hidden;
 }
 
 .section-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 12px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.1s;
+}
+.section-title:hover { background: var(--surface2); }
+
+.section-label {
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.09em;
   color: var(--muted);
-  margin-bottom: 10px;
+  flex: 1;
+}
+
+/* Section collapse toggle (far right of title) */
+.section-toggle {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 2px;
   display: flex;
   align-items: center;
-  gap: 6px;
+  transition: transform 0.2s, color 0.15s;
+  flex-shrink: 0;
+  rotate: 90deg; /* default: expanded = arrow pointing down */
+}
+.section-toggle.collapsed {
+  rotate: 0deg;  /* collapsed = arrow pointing right */
+  color: var(--muted);
+}
+
+/* Section body — animated collapse */
+.section-body {
+  padding: 0 12px 12px;
+  overflow: hidden;
+  transition: padding 0.15s;
+}
+.section-body.collapsed {
+  display: none;
+  padding: 0;
 }
 
 .project-badge {

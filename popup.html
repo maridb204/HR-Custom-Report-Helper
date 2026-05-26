@@ -17,78 +17,100 @@
   <div class="container">
 
     <!-- ========== SECTION: Project Name Generator ========== -->
-    <section class="section">
-      <div class="section-title">Project Name Generator</div>
-      <div class="input-row">
-        <input
-          type="text"
-          id="projectName"
-          placeholder="ชื่อ project เช่น tide"
-          autocomplete="off"
-          spellcheck="false"
-        />
-        <button class="btn btn-primary" id="btnGenerate">Generate</button>
-        <button class="btn btn-secondary" id="btnClear">Clear</button>
+    <section class="section" id="sec-gen">
+      <div class="section-title">
+        <span class="section-label">Project Name Generator</span>
+        <button class="section-toggle" aria-expanded="true">›</button>
       </div>
+      <div class="section-body">
+        <div class="input-row">
+          <input
+            type="text"
+            id="projectName"
+            placeholder="ชื่อ project เช่น tide"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button class="btn btn-primary" id="btnGenerate">Generate</button>
+          <button class="btn btn-secondary" id="btnClear">Clear</button>
+        </div>
 
-      <div class="output-block" id="namesOutput">
-        <div class="output-label">Generated Names</div>
-        <pre class="output-text" id="namesText"></pre>
-        <button class="btn btn-copy" data-copy="names">Copy Names</button>
+        <div class="output-block" id="namesOutput">
+          <div class="output-label">Generated Names</div>
+          <pre class="output-text" id="namesText"></pre>
+          <button class="btn btn-copy" data-copy="names">Copy Names</button>
+        </div>
       </div>
     </section>
 
     <!-- ========== SECTION: SQL Generator ========== -->
-    <section class="section">
-      <div class="section-title">SQL Generator</div>
-
-      <div class="output-block" id="sqlOutput">
-        <div class="output-label">Query Column</div>
-        <pre class="output-text mono" id="queryText"></pre>
-        <button class="btn btn-copy" data-copy="query">Copy Query</button>
-
-        <div class="output-label mt8">Join Statement</div>
-        <pre class="output-text mono" id="joinText"></pre>
-        <button class="btn btn-copy" data-copy="join">Copy Join</button>
-
-        <div class="divider"></div>
-        <button class="btn btn-copy-all" data-copy="all">Copy All</button>
+    <section class="section" id="sec-sql">
+      <div class="section-title">
+        <span class="section-label">SQL Generator</span>
+        <button class="section-toggle" aria-expanded="true">›</button>
       </div>
+      <div class="section-body">
+        <div class="output-block" id="sqlOutput">
+          <div class="output-label">Query Column</div>
+          <pre class="output-text mono" id="queryText"></pre>
+          <button class="btn btn-copy" data-copy="query">Copy Query</button>
 
-      <div id="sqlHint" class="hint-text">Generate project name ก่อนเพื่อดู SQL</div>
+          <div class="output-label mt8">Join Statement</div>
+          <pre class="output-text mono" id="joinText"></pre>
+          <button class="btn btn-copy" data-copy="join">Copy Join</button>
+
+          <div class="divider"></div>
+          <button class="btn btn-copy-all" data-copy="all">Copy All</button>
+        </div>
+
+        <div id="sqlHint" class="hint-text">Generate project name ก่อนเพื่อดู SQL</div>
+      </div>
     </section>
 
     <!-- ========== SECTION: Workflow Checklist ========== -->
-    <section class="section">
+    <section class="section" id="sec-checklist">
       <div class="section-title">
-        Workflow Checklist
+        <span class="section-label">Workflow Checklist</span>
         <span class="project-badge" id="checklistBadge"></span>
+        <button class="section-toggle" aria-expanded="true">›</button>
       </div>
-      <div class="checklist" id="checklist">
-        <!-- Rendered by popup.js -->
+      <div class="section-body">
+        <div class="checklist" id="checklist">
+          <!-- Rendered by popup.js -->
+        </div>
+        <button class="btn btn-secondary btn-wide" id="btnResetChecklist">Reset Checklist</button>
       </div>
-      <button class="btn btn-secondary btn-wide" id="btnResetChecklist">Reset Checklist</button>
     </section>
 
     <!-- ========== SECTION: Open Workspace ========== -->
-    <section class="section">
-      <div class="section-title">Quick Access</div>
-      <button class="btn btn-primary btn-wide" id="btnOpenWorkspace">Open Workspace</button>
-      <div class="hint-text mt4">เปิด: คอลัมน์รายงาน / Record Type / Employee Template</div>
+    <section class="section" id="sec-workspace">
+      <div class="section-title">
+        <span class="section-label">Quick Access</span>
+        <button class="section-toggle" aria-expanded="true">›</button>
+      </div>
+      <div class="section-body">
+        <button class="btn btn-primary btn-wide" id="btnOpenWorkspace">Open Workspace</button>
+        <div class="hint-text mt4">เปิด: คอลัมน์รายงาน / Record Type / Employee Template</div>
+      </div>
     </section>
 
     <!-- ========== SECTION: Jasper Replace Tool ========== -->
-    <section class="section">
-      <div class="section-title">Jasper Replace Tool</div>
-      <p class="hint-text" style="margin-bottom:8px;">
-        Replace <span class="mono-inline">SAL_OT</span> &rarr; <span class="mono-inline">SAL_OT_&lt;project&gt;</span>
-      </p>
-      <div class="file-upload-row">
-        <label for="jrxmlFile" class="btn btn-secondary">Upload .jrxml</label>
-        <input type="file" id="jrxmlFile" accept=".jrxml,.xml">
-        <span class="file-name" id="fileName">No file selected</span>
+    <section class="section" id="sec-jasper">
+      <div class="section-title">
+        <span class="section-label">Jasper Replace Tool</span>
+        <button class="section-toggle" aria-expanded="true">›</button>
       </div>
-      <button class="btn btn-primary btn-wide" id="btnProcess" disabled>Process &amp; Download</button>
+      <div class="section-body">
+        <p class="hint-text" style="margin-bottom:8px;">
+          Replace <span class="mono-inline">SAL_OT</span> &rarr; <span class="mono-inline">SAL_OT_&lt;project&gt;</span>
+        </p>
+        <div class="file-upload-row">
+          <label for="jrxmlFile" class="btn btn-secondary">Upload .jrxml</label>
+          <input type="file" id="jrxmlFile" accept=".jrxml,.xml">
+          <span class="file-name" id="fileName">No file selected</span>
+        </div>
+        <button class="btn btn-primary btn-wide" id="btnProcess" disabled>Process &amp; Download</button>
+      </div>
     </section>
 
   </div>
