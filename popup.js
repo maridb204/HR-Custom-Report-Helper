@@ -81,15 +81,24 @@ function initPanelMode() {
   }
 }
 
-async function pinToSidePanel() {
-  if (IS_PANEL) return; // ถ้าอยู่ใน panel อยู่แล้ว ไม่ต้องทำอะไร
-  try {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    await chrome.sidePanel.open({ windowId: tab.windowId });
-    window.close(); // ปิด popup หลังจากเปิด side panel
-  } catch {
-    showToast('Side Panel ต้องการ Chrome 114+');
+function pinToSidePanel() {
+  if (IS_PANEL) return;
+
+  // chrome.sidePanel ไม่มี = extension ยังไม่ได้ Reload หลังอัปเดต manifest
+  if (!chrome.sidePanel?.open) {
+    showToast('กด Reload extension ที่ chrome://extensions/ ก่อน');
+    return;
   }
+
+  // ใช้ callback แทน async/await เพื่อรักษา user gesture context
+  // Chrome จะ block chrome.sidePanel.open() ถ้า user gesture หายไประหว่าง await
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    const windowId = tabs?.[0]?.windowId;
+    chrome.sidePanel
+      .open(windowId ? { windowId } : {})
+      .then(() => window.close())
+      .catch(err => showToast(err?.message || 'เปิด Side Panel ไม่สำเร็จ'));
+  });
 }
 
 // ── GENERATOR ────────────────────────────────────
