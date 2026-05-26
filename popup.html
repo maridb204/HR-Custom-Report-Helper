@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>HR Custom Report Helper</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="header">
+    <span class="header-title">HR Custom Report Helper</span>
+  </div>
+
+  <div class="container">
+
+    <!-- ========== SECTION: Project Name Generator ========== -->
+    <section class="section">
+      <div class="section-title">Project Name Generator</div>
+      <div class="input-row">
+        <input
+          type="text"
+          id="projectName"
+          placeholder="ชื่อ project เช่น tide"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button class="btn btn-primary" id="btnGenerate">Generate</button>
+      </div>
+
+      <div class="output-block" id="namesOutput">
+        <div class="output-label">Generated Names</div>
+        <pre class="output-text" id="namesText"></pre>
+        <button class="btn btn-copy" data-copy="names">Copy Names</button>
+      </div>
+    </section>
+
+    <!-- ========== SECTION: SQL Generator ========== -->
+    <section class="section">
+      <div class="section-title">SQL Generator</div>
+
+      <div class="output-block" id="sqlOutput">
+        <div class="output-label">Query Column</div>
+        <pre class="output-text mono" id="queryText"></pre>
+        <button class="btn btn-copy" data-copy="query">Copy Query</button>
+
+        <div class="output-label mt8">Join Statement</div>
+        <pre class="output-text mono" id="joinText"></pre>
+        <button class="btn btn-copy" data-copy="join">Copy Join</button>
+
+        <div class="divider"></div>
+        <button class="btn btn-copy-all" data-copy="all">Copy All</button>
+      </div>
+
+      <div id="sqlHint" class="hint-text">Generate project name ก่อนเพื่อดู SQL</div>
+    </section>
+
+    <!-- ========== SECTION: Workflow Checklist ========== -->
+    <section class="section">
+      <div class="section-title">Workflow Checklist</div>
+      <div class="checklist" id="checklist">
+        <!-- Rendered by popup.js -->
+      </div>
+      <button class="btn btn-secondary btn-wide" id="btnResetChecklist">Reset Checklist</button>
+    </section>
+
+    <!-- ========== SECTION: Open Workspace ========== -->
+    <section class="section">
+      <div class="section-title">Quick Access</div>
+      <button class="btn btn-primary btn-wide" id="btnOpenWorkspace">Open Workspace</button>
+      <div class="hint-text mt4">เปิด: คอลัมน์รายงาน / Record Type / Employee Template</div>
+    </section>
+
+    <!-- ========== SECTION: Jasper Replace Tool ========== -->
+    <section class="section">
+      <div class="section-title">Jasper Replace Tool</div>
+      <p class="hint-text" style="margin-bottom:8px;">
+        Replace <span class="mono-inline">SAL_OT</span> &rarr; <span class="mono-inline">SAL_OT_&lt;project&gt;</span>
+      </p>
+      <div class="file-upload-row">
+        <label for="jrxmlFile" class="btn btn-secondary">Upload .jrxml</label>
+        <input type="file" id="jrxmlFile" accept=".jrxml,.xml">
+        <span class="file-name" id="fileName">No file selected</span>
+      </div>
+      <button class="btn btn-primary btn-wide" id="btnProcess" disabled>Process &amp; Download</button>
+    </section>
+
+  </div>
+
+  <!-- Toast notification -->
+  <div class="toast" id="toast"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
