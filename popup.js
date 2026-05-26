@@ -163,6 +163,9 @@ function bindEvents() {
     if (btn) handleCopy(btn.dataset.copy);
   });
 
+  // Clear generator
+  document.getElementById('btnClear').addEventListener('click', handleClear);
+
   // Checklist reset
   document.getElementById('btnResetChecklist').addEventListener('click', resetChecklist);
 
@@ -212,6 +215,16 @@ function pinToSidePanel() {
 }
 
 // ── GENERATOR ────────────────────────────────────
+function handleClear() {
+  currentProject = '';
+  document.getElementById('projectName').value = '';
+  document.getElementById('namesOutput').style.display = 'none';
+  document.getElementById('sqlOutput').style.display   = 'none';
+  document.getElementById('sqlHint').style.display     = '';
+  document.getElementById('btnProcess').disabled       = true;
+  document.getElementById('projectName').focus();
+}
+
 function handleGenerate() {
   const raw = document.getElementById('projectName').value.trim();
   if (!raw) {
