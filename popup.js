@@ -131,7 +131,7 @@ const CHECKLIST_STEPS = [
     label: 'STEP 9  ทดสอบ Employee Template',
     details: [
       'วันที่: 010426 – 300426',
-      'หน่วยงาน: EU Capital Holding Company Limited',
+      'หน่วยงาน (ระดับบริษัท): บริษัท อียูแคปปิตอล โฮลดิ้ง จำกัด',
       'กด ดำเนินการ',
     ],
   },
