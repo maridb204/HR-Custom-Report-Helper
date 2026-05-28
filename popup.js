@@ -138,7 +138,9 @@ const CHECKLIST_STEPS = [
   {
     label: 'STEP 10  ดาวน์โหลด Jasper File',
     details: [
+      'กดรูประแจ → แก้ไขรายงาน',
       'กด แก้ไขรายงาน',
+      'กดรูประแจ → แก้ไขรายงาน',
       'กด Jasper file upload',
       'กด Download',
     ],
