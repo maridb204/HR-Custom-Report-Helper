@@ -82,7 +82,8 @@ const CHECKLIST_STEPS = [
       'กลับมาหน้า job role',
       'ค้นหา hr manager',
       'กด แก้ไข',
-      'ตรวจสอบว่า jobtype{p} ขึ้นในฟอร์มหรือไม่',
+      'กด Advance',
+      ['job type {p}', 'เลือก factory'],
     ],
   },
   {
@@ -109,12 +110,12 @@ const CHECKLIST_STEPS = [
       '§ Captured — current period',
       'กด + → Captured',
       ['Capture Column', 'SAL_OT_{p}'],
-      'period → month, period value → current period',
+      'Aggregate → Amount, period → month, period value → current period',
       'กด Save',
       '§ Captured — 1 period before',
       'กด + → Captured',
       ['Capture Column', 'SAL_OT_{p}'],
-      'period → month, period value → 1 period before',
+      'Aggregate → Amount, period → month, period value → 1 period before',
       'กด Save',
     ],
   },
@@ -143,6 +144,7 @@ const CHECKLIST_STEPS = [
       'กดรูประแจ → แก้ไขรายงาน',
       'กด Jasper file upload',
       'กด Download',
+      'แก้ชื่อไฟล์เป็น {p}.jrxml',
     ],
   },
   {
@@ -181,7 +183,8 @@ const LS_KEY = 'hr_report_checklist_v1';
 const IS_PANEL = new URLSearchParams(window.location.search).get('mode') === 'panel';
 
 // ── STATE ─────────────────────────────────────────
-let currentProject = '';   // ชื่อ project ที่ generate ล่าสุด
+let currentProject = '';   // ชื่อ project ที่ generate ล่าสุด (report_xxx)
+let rawProject     = '';   // ชื่อที่พิมพ์ (ใช้ตั้งชื่อไฟล์)
 let jrxmlContent  = '';    // เนื้อหาไฟล์ .jrxml ที่อ่านแล้ว
 let jrxmlFileName = '';    // ชื่อไฟล์ .jrxml ที่อัปโหลด
 
@@ -315,6 +318,7 @@ function handleGenerate() {
     return;
   }
 
+  rawProject     = raw;
   currentProject = raw;
 
   // Build text blocks
@@ -561,7 +565,7 @@ function processJrxml() {
   const replaced = jrxmlContent.replaceAll('SAL_OT', `SAL_OT_${currentProject}`);
 
   // Build new filename: report.jrxml -> report_tide.jrxml
-  const newName = jrxmlFileName.replace(/\.jrxml$/i, `_${currentProject}.jrxml`);
+  const newName = `EmployeeList_report_${rawProject}.jrxml`;
 
   downloadText(replaced, newName, 'application/xml');
   showToast('Downloaded: ' + newName);
